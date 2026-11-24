@@ -99,6 +99,56 @@ header {
   line-height: 1.5;
 }
 
+  .destaque-cidade {
+  position: relative;
+  height: 175px;
+  border-radius: 17px;
+  overflow: hidden;
+  margin-bottom: 18px;
+  background: #17234B;
+  box-shadow: 0 4px 14px rgba(23, 35, 75, 0.12);
+}
+
+.destaque-cidade img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.destaque-texto {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
+  color: #FFFFFF;
+  background: linear-gradient(
+    90deg,
+    rgba(23, 35, 75, 0.88),
+    rgba(23, 35, 75, 0.15)
+  );
+}
+
+.destaque-texto span {
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  color: #FFD84D;
+  margin-bottom: 8px;
+}
+
+.destaque-texto h2 {
+  font-size: 21px;
+  margin-bottom: 6px;
+}
+
+.destaque-texto p {
+  font-size: 12px;
+  line-height: 1.4;
+  max-width: 260px;
+}
 main {
   max-width: 680px;
   margin: auto;
@@ -406,6 +456,17 @@ footer {
 
 <main>
 
+  <section class="destaque-cidade">
+  <img
+    src="https://upload.wikimedia.org/wikipedia/commons/8/8b/Ponte.webp"
+    alt="Orla de Porto Nacional"
+  >
+  <div class="destaque-texto">
+    <span>SEJA BEM-VINDO</span>
+    <h2>Descubra Porto Nacional</h2>
+    <p>Encontre lugares, serviços e experiências da nossa cidade.</p>
+  </div>
+</section>
   <div class="busca">
     <span>⌕</span>
     <input
