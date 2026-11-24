@@ -374,6 +374,40 @@ main {
   display: none;
 }
 
+  .evento-vazio {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 16px;
+  background: #FFFFFF;
+  border: 1px solid #E3E6ED;
+  border-radius: 15px;
+  box-shadow: 0 3px 12px rgba(23, 35, 75, 0.04);
+}
+
+.evento-icone {
+  width: 45px;
+  height: 45px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: #FFF0E7;
+  color: #F47A35;
+  font-size: 23px;
+}
+
+.evento-vazio strong {
+  color: #343746;
+  font-size: 13px;
+}
+
+.evento-vazio p {
+  color: #737585;
+  font-size: 11px;
+  line-height: 1.5;
+  margin-top: 5px;
+}
 nav {
   position: fixed;
   bottom: 0;
@@ -484,6 +518,20 @@ footer {
   <span class="seta">⌄</span>
 </div>
 
+    <section class="secao eventos">
+    <div class="titulo-secao">
+      <h3>Acontece em Porto</h3>
+      <small>Ver agenda →</small>
+    </div>
+
+    <div class="evento-vazio">
+      <div class="evento-icone">▦</div>
+      <div>
+        <strong>Fique por dentro da cidade</strong>
+        <p>Em breve, novidades, eventos e programações de Porto Nacional.</p>
+      </div>
+    </div>
+  </section>
   <section class="secao">
     <div class="titulo-secao">
       <h3>Explore por categoria</h3>
