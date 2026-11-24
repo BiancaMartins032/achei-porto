@@ -136,6 +136,34 @@ main {
 .busca input::placeholder {
   color: #9296A3;
 }
+  .filtro-bairro {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 14px;
+  margin-top: 12px;
+  background: #FFFFFF;
+  border: 1px solid #E3E6ED;
+  border-radius: 12px;
+  color: #4059B8;
+}
+
+.filtro-bairro select {
+  flex: 1;
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #343746;
+  font-size: 13px;
+  appearance: none;
+}
+
+.filtro-bairro .seta {
+  color: #737585;
+  font-size: 18px;
+}
 
 .secao {
   margin-top: 27px;
@@ -387,6 +415,13 @@ footer {
       oninput="filtrar()"
     >
   </div>
+  <div class="filtro-bairro">
+  <span>⌖</span>
+  <select id="bairro">
+    <option value="">Todos os bairros</option>
+  </select>
+  <span class="seta">⌄</span>
+</div>
 
   <section class="secao">
     <div class="titulo-secao">
