@@ -1,0 +1,607 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#17234B">
+<title>Achei Porto — Procurou? Achou!</title>
+
+<style>
+:root {
+  --azul: #17234B;
+  --azul-claro: #4059B8;
+  --laranja: #F47A35;
+  --fundo: #F5F6F8;
+  --texto: #272B36;
+  --cinza: #777D8B;
+  --borda: #E9EBF0;
+  --branco: #FFFFFF;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: var(--fundo);
+  color: var(--texto);
+}
+
+button, input {
+  font: inherit;
+}
+
+header {
+  background: var(--azul);
+  color: white;
+  padding: 20px 18px 24px;
+}
+
+.topo {
+  max-width: 680px;
+  margin: auto;
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  width: 43px;
+  height: 43px;
+  border-radius: 13px;
+  background: white;
+  color: var(--azul);
+  display: grid;
+  place-items: center;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.marca h1 {
+  font-size: 22px;
+  letter-spacing: -0.7px;
+}
+
+.marca p {
+  font-size: 10px;
+  color: #C9D3F0;
+  margin-top: 3px;
+  letter-spacing: 1px;
+}
+
+.chamada {
+  margin-top: 25px;
+}
+
+.chamada h2 {
+  font-size: 24px;
+  line-height: 1.25;
+  margin-bottom: 7px;
+}
+
+.chamada p {
+  font-size: 13px;
+  color: #D7DDF0;
+}
+
+main {
+  max-width: 680px;
+  margin: auto;
+  padding: 18px 14px 100px;
+}
+
+.busca {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: white;
+  border: 1px solid var(--borda);
+  border-radius: 13px;
+  padding: 0 14px;
+  height: 52px;
+  margin-top: -40px;
+  position: relative;
+  box-shadow: 0 5px 18px #101b3810;
+}
+
+.busca span {
+  font-size: 20px;
+  color: var(--cinza);
+}
+
+.busca input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 14px;
+  color: var(--texto);
+}
+
+.secao {
+  margin-top: 27px;
+}
+
+.titulo-secao {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 13px;
+}
+
+.titulo-secao h3 {
+  font-size: 17px;
+}
+
+.titulo-secao small {
+  color: var(--azul-claro);
+  font-size: 12px;
+}
+
+.categorias {
+  display: flex;
+  gap: 9px;
+  overflow-x: auto;
+  padding-bottom: 5px;
+  scrollbar-width: none;
+}
+
+.categorias::-webkit-scrollbar {
+  display: none;
+}
+
+.categoria {
+  flex-shrink: 0;
+  border: 1px solid var(--borda);
+  background: white;
+  border-radius: 12px;
+  padding: 11px 14px;
+  font-size: 12px;
+  color: var(--texto);
+  cursor: pointer;
+}
+
+.categoria.ativa {
+  background: var(--azul);
+  color: white;
+  border-color: var(--azul);
+}
+
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+}
+
+.publicacao {
+  background: white;
+  border: 1px solid var(--borda);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.empresa {
+  display: flex;
+  align-items: center;
+  padding: 13px;
+  gap: 10px;
+}
+
+.avatar {
+  width: 39px;
+  height: 39px;
+  border-radius: 12px;
+  background: #E9EDF8;
+  color: var(--azul);
+  display: grid;
+  place-items: center;
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.empresa-info {
+  flex: 1;
+}
+
+.empresa-info strong {
+  font-size: 13px;
+}
+
+.empresa-info p {
+  font-size: 11px;
+  color: var(--cinza);
+  margin-top: 4px;
+}
+
+.foto {
+  width: 100%;
+  height: 225px;
+  object-fit: cover;
+  display: block;
+  background: #E9EBF0;
+}
+
+.conteudo {
+  padding: 14px;
+}
+
+.conteudo h4 {
+  font-size: 16px;
+  margin-bottom: 6px;
+}
+
+.conteudo p {
+  color: var(--cinza);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.acoes {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 13px;
+}
+
+.tag {
+  background: #EEF1FA;
+  color: var(--azul-claro);
+  border-radius: 20px;
+  padding: 6px 10px;
+  font-size: 10px;
+}
+
+.whatsapp {
+  background: #188C55;
+  color: white;
+  border: none;
+  border-radius: 9px;
+  padding: 10px 13px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.sem-resultados {
+  background: white;
+  padding: 30px 18px;
+  text-align: center;
+  border-radius: 14px;
+  color: var(--cinza);
+  font-size: 14px;
+  display: none;
+}
+
+nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: white;
+  border-top: 1px solid var(--borda);
+  display: flex;
+  justify-content: center;
+  z-index: 10;
+  padding: 10px 5px calc(10px + env(safe-area-inset-bottom));
+}
+
+.nav-interno {
+  width: 100%;
+  max-width: 680px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.nav-item {
+  background: none;
+  border: none;
+  color: var(--cinza);
+  font-size: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.nav-item span {
+  font-size: 21px;
+}
+
+.nav-item.ativa {
+  color: var(--azul-claro);
+  font-weight: bold;
+}
+
+footer {
+  text-align: center;
+  color: var(--cinza);
+  font-size: 11px;
+  padding: 25px 10px;
+}
+
+@media (min-width: 700px) {
+  main {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .foto {
+    height: 300px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="topo">
+    <div class="marca">
+      <div class="logo">⌕</div>
+      <div>
+        <h1>Achei Porto</h1>
+        <p>PORTO NACIONAL · TOCANTINS</p>
+      </div>
+    </div>
+
+    <div class="chamada">
+      <h2>Procurou? Achou!</h2>
+      <p>Descubra empresas, produtos e serviços da nossa cidade.</p>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <div class="busca">
+    <span>⌕</span>
+    <input
+      type="search"
+      id="pesquisa"
+      placeholder="O que você está procurando?"
+      oninput="filtrar()"
+    >
+  </div>
+
+  <section class="secao">
+    <div class="titulo-secao">
+      <h3>Explore por categoria</h3>
+    </div>
+
+    <div class="categorias">
+      <button class="categoria ativa" onclick="categoria('Todas',this)">Todas</button>
+      <button class="categoria" onclick="categoria('Alimentação',this)">Alimentação</button>
+      <button class="categoria" onclick="categoria('Moda',this)">Moda</button>
+      <button class="categoria" onclick="categoria('Beleza',this)">Beleza</button>
+      <button class="categoria" onclick="categoria('Automotivo',this)">Automotivo</button>
+      <button class="categoria" onclick="categoria('Serviços',this)">Serviços</button>
+      <button class="categoria" onclick="categoria('Saúde',this)">Saúde</button>
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="titulo-secao">
+      <h3>Descubra o comércio local</h3>
+      <small>Porto Nacional - TO</small>
+    </div>
+
+    <div class="feed" id="feed">
+
+      <article class="publicacao" data-categoria="Alimentação"
+        data-texto="padaria pão bolo café alimentação">
+
+        <div class="empresa">
+          <div class="avatar">P</div>
+          <div class="empresa-info">
+            <strong>Padaria Exemplo</strong>
+            <p>Porto Nacional · Alimentação</p>
+          </div>
+        </div>
+
+        <img class="foto"
+          src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=900"
+          alt="Pães artesanais">
+
+        <div class="conteudo">
+          <h4>Pães e delícias para o seu dia</h4>
+          <p>Conheça os produtos disponíveis neste estabelecimento.</p>
+          <div class="acoes">
+            <span class="tag">Alimentação</span>
+            <button class="whatsapp" onclick="contato()">WhatsApp ↗</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="publicacao" data-categoria="Moda"
+        data-texto="roupas loja moda calçados vestuário">
+
+        <div class="empresa">
+          <div class="avatar">M</div>
+          <div class="empresa-info">
+            <strong>Loja de Moda Exemplo</strong>
+            <p>Porto Nacional · Moda</p>
+          </div>
+        </div>
+
+        <img class="foto"
+          src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=900"
+          alt="Loja de roupas">
+
+        <div class="conteudo">
+          <h4>Novidades em moda e vestuário</h4>
+          <p>Descubra opções de roupas e acessórios.</p>
+          <div class="acoes">
+            <span class="tag">Moda</span>
+            <button class="whatsapp" onclick="contato()">WhatsApp ↗</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="publicacao" data-categoria="Beleza"
+        data-texto="beleza salão cabelo estética manicure">
+
+        <div class="empresa">
+          <div class="avatar">B</div>
+          <div class="empresa-info">
+            <strong>Espaço de Beleza Exemplo</strong>
+            <p>Porto Nacional · Beleza</p>
+          </div>
+        </div>
+
+        <img class="foto"
+          src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=900"
+          alt="Salão de beleza">
+
+        <div class="conteudo">
+          <h4>Cuidados e serviços de beleza</h4>
+          <p>Encontre profissionais e serviços de beleza na cidade.</p>
+          <div class="acoes">
+            <span class="tag">Beleza</span>
+            <button class="whatsapp" onclick="contato()">WhatsApp ↗</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="publicacao" data-categoria="Automotivo"
+        data-texto="mecânica carro oficina automotivo veículos">
+
+        <div class="empresa">
+          <div class="avatar">A</div>
+          <div class="empresa-info">
+            <strong>Oficina Exemplo</strong>
+            <p>Porto Nacional · Automotivo</p>
+          </div>
+        </div>
+
+        <img class="foto"
+          src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=900"
+          alt="Oficina automotiva">
+
+        <div class="conteudo">
+          <h4>Serviços automotivos</h4>
+          <p>Conheça opções de manutenção e cuidados com veículos.</p>
+          <div class="acoes">
+            <span class="tag">Automotivo</span>
+            <button class="whatsapp" onclick="contato()">WhatsApp ↗</button>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="sem-resultados" id="semResultados">
+      Nenhum resultado encontrado. Tente outra pesquisa.
+    </div>
+  </section>
+
+  <footer>
+    Achei Porto · Valorizando o comércio local.
+  </footer>
+
+</main>
+
+<nav>
+  <div class="nav-interno">
+    <button class="nav-item ativa" onclick="inicio()">
+      <span>⌂</span>Início
+    </button>
+    <button class="nav-item" onclick="irPesquisa()">
+      <span>⌕</span>Pesquisar
+    </button>
+    <button class="nav-item" onclick="irEmpresas()">
+      <span>▦</span>Empresas
+    </button>
+    <button class="nav-item" onclick="sobre()">
+      <span>○</span>Sobre
+    </button>
+  </div>
+</nav>
+
+<script>
+let categoriaAtual = 'Todas';
+
+function filtrar() {
+  const termo = document.getElementById('pesquisa')
+    .value.toLowerCase().trim();
+
+  const publicacoes = document.querySelectorAll('.publicacao');
+  let encontrados = 0;
+
+  publicacoes.forEach(item => {
+    const texto = (
+      item.innerText + ' ' + item.dataset.texto
+    ).toLowerCase();
+
+    const correspondeTexto = texto.includes(termo);
+    const correspondeCategoria =
+      categoriaAtual === 'Todas' ||
+      item.dataset.categoria === categoriaAtual;
+
+    const mostrar = correspondeTexto && correspondeCategoria;
+
+    item.style.display = mostrar ? 'block' : 'none';
+
+    if (mostrar) encontrados++;
+  });
+
+  document.getElementById('semResultados').style.display =
+    encontrados === 0 ? 'block' : 'none';
+}
+
+function categoria(nome, botao) {
+  categoriaAtual = nome;
+
+  document.querySelectorAll('.categoria').forEach(item => {
+    item.classList.remove('ativa');
+  });
+
+  botao.classList.add('ativa');
+  filtrar();
+}
+
+function irPesquisa() {
+  document.getElementById('pesquisa').focus();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function inicio() {
+  document.getElementById('pesquisa').value = '';
+  categoriaAtual = 'Todas';
+
+  document.querySelectorAll('.categoria').forEach(item => {
+    item.classList.toggle(
+      'ativa',
+      item.textContent === 'Todas'
+    );
+  });
+
+  filtrar();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function irEmpresas() {
+  window.scrollTo({
+    top: document.querySelector('.feed').offsetTop,
+    behavior: 'smooth'
+  });
+}
+
+function sobre() {
+  alert('Achei Porto: uma vitrine independente para descobrir empresas, produtos e serviços de Porto Nacional - TO.');
+}
+
+function contato() {
+  alert('Esta é uma publicação demonstrativa. O contato pelo WhatsApp será ativado quando cadastrarmos os dados reais da empresa.');
+}
+</script>
+
+</body>
+</html>
