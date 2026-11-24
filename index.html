@@ -32,6 +32,7 @@ body {
   font-family: Arial, sans-serif;
   background: var(--fundo);
   color: var(--texto);
+  min-height: 100vh;
 }
 
 button, input {
@@ -124,7 +125,12 @@ main {
   outline: none;
   width: 100%;
   font-size: 14px;
-  color: var(--texto);
+  color: #343746;
+  background: transparent;
+}
+
+.busca input::placeholder {
+  color: #9296A3;
 }
 
 .secao {
