@@ -1,0 +1,715 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#17234B">
+<title>Administração — Achei Porto</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root {
+  --azul:#17234B;
+  --azul-claro:#4059B8;
+  --laranja:#F47A35;
+  --fundo:#F5F6F8;
+  --texto:#343746;
+  --cinza:#737585;
+  --borda:#E3E6ED;
+  --branco:#FFFFFF;
+}
+
+* { box-sizing:border-box; margin:0; padding:0; }
+
+body {
+  font-family:Arial,sans-serif;
+  background:var(--fundo);
+  color:var(--texto);
+  min-height:100vh;
+}
+
+header {
+  background:var(--azul);
+  color:white;
+  padding:22px 18px;
+}
+
+.topo {
+  max-width:850px;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.marca {
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.logo {
+  width:43px;
+  height:43px;
+  border-radius:12px;
+  background:white;
+  color:var(--azul);
+  display:grid;
+  place-items:center;
+  font-size:25px;
+}
+
+.marca h1 { font-size:19px; }
+.marca p { color:#C9D3F0; font-size:11px; margin-top:4px; }
+
+main {
+  max-width:850px;
+  margin:auto;
+  padding:24px 15px 50px;
+}
+
+.card {
+  background:white;
+  border:1px solid var(--borda);
+  border-radius:16px;
+  padding:20px;
+  margin-bottom:18px;
+  box-shadow:0 3px 12px rgba(23,35,75,.04);
+}
+
+h2 { font-size:20px; margin-bottom:8px; }
+.subtitulo { color:var(--cinza); font-size:13px; line-height:1.5; }
+
+label {
+  display:block;
+  font-size:12px;
+  font-weight:bold;
+  margin:15px 0 7px;
+}
+
+input,select,textarea {
+  width:100%;
+  border:1px solid var(--borda);
+  border-radius:10px;
+  padding:13px;
+  background:white;
+  color:var(--texto);
+  font:14px Arial,sans-serif;
+  outline:none;
+}
+
+input:focus,select:focus,textarea:focus {
+  border-color:var(--azul-claro);
+}
+
+textarea { min-height:90px; resize:vertical; }
+
+button {
+  border:0;
+  border-radius:10px;
+  padding:12px 16px;
+  font-weight:bold;
+  cursor:pointer;
+  font-size:13px;
+}
+
+.botao-principal {
+  background:var(--azul);
+  color:white;
+  width:100%;
+  margin-top:18px;
+}
+
+.botao-secundario {
+  background:#EEF1FA;
+  color:var(--azul);
+}
+
+.botao-perigo {
+  background:#FCECEC;
+  color:#A52D2D;
+}
+
+.botao-sair {
+  background:#FFFFFF;
+  color:var(--azul);
+}
+
+.linha {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.oculto { display:none !important; }
+
+.aviso {
+  padding:12px;
+  border-radius:10px;
+  font-size:13px;
+  line-height:1.5;
+  margin-top:14px;
+  display:none;
+}
+
+.aviso.erro { background:#FCECEC; color:#A52D2D; }
+.aviso.sucesso { background:#E9F7EF; color:#176B3A; }
+
+.topo-lista {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:15px;
+}
+
+.estabelecimento {
+  background:white;
+  border:1px solid var(--borda);
+  border-radius:13px;
+  padding:13px;
+  display:flex;
+  gap:12px;
+  align-items:center;
+  margin-top:10px;
+}
+
+.estabelecimento img {
+  width:66px;
+  height:66px;
+  border-radius:10px;
+  object-fit:cover;
+  background:#EEF1FA;
+}
+
+.estabelecimento-info { flex:1; min-width:0; }
+.estabelecimento-info strong { font-size:14px; }
+.estabelecimento-info p {
+  color:var(--cinza);
+  font-size:11px;
+  margin-top:5px;
+}
+
+.status {
+  display:inline-block;
+  font-size:10px;
+  padding:5px 8px;
+  border-radius:20px;
+  margin-top:7px;
+  background:#E9F7EF;
+  color:#176B3A;
+}
+
+.status.inativo {
+  background:#FCECEC;
+  color:#A52D2D;
+}
+
+.acoes {
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+}
+
+.acoes button { padding:9px 10px; }
+
+.vazio {
+  text-align:center;
+  padding:25px 10px;
+  color:var(--cinza);
+  font-size:13px;
+}
+
+.check {
+  display:flex;
+  align-items:center;
+  gap:9px;
+  margin-top:16px;
+  font-size:13px;
+}
+
+.check input { width:18px; height:18px; }
+
+@media(max-width:560px) {
+  .linha { grid-template-columns:1fr; }
+  .estabelecimento { align-items:flex-start; flex-wrap:wrap; }
+  .acoes { width:100%; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="topo">
+    <div class="marca">
+      <div class="logo">⌕</div>
+      <div>
+        <h1>Achei Porto</h1>
+        <p>PAINEL ADMINISTRATIVO</p>
+      </div>
+    </div>
+    <button id="botaoSair" class="botao-sair oculto">Sair</button>
+  </div>
+</header>
+
+<main>
+
+  <section id="telaLogin" class="card">
+    <h2>Acesso administrativo</h2>
+    <p class="subtitulo">Entre com sua conta autorizada para gerenciar os estabelecimentos.</p>
+
+    <form id="formLogin">
+      <label for="email">E-mail</label>
+      <input id="email" type="email" autocomplete="username" required>
+
+      <label for="senha">Senha</label>
+      <input id="senha" type="password" autocomplete="current-password" required>
+
+      <button class="botao-principal" type="submit">Entrar no painel</button>
+    </form>
+
+    <div id="avisoLogin" class="aviso"></div>
+  </section>
+
+  <section id="painel" class="oculto">
+
+    <div class="card">
+      <h2>Gerenciar estabelecimentos</h2>
+      <p class="subtitulo">Cadastre empresas, profissionais e serviços que aparecerão na vitrine pública.</p>
+    </div>
+
+    <div class="card">
+      <h2 id="tituloFormulario">Novo estabelecimento</h2>
+
+      <form id="formEstabelecimento">
+        <input id="registroId" type="hidden">
+
+        <label for="nome">Nome do estabelecimento *</label>
+        <input id="nome" required maxlength="150" placeholder="Ex.: Padaria Central">
+
+        <div class="linha">
+          <div>
+            <label for="tipo">Tipo de cadastro</label>
+            <select id="tipo">
+              <option value="Empresa">Empresa</option>
+              <option value="Profissional">Profissional</option>
+              <option value="Produto">Produto</option>
+              <option value="Serviço">Serviço</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="categoria">Categoria</label>
+            <select id="categoria">
+              <option value="Alimentação">Alimentação</option>
+              <option value="Moda">Moda</option>
+              <option value="Beleza">Beleza</option>
+              <option value="Automotivo">Automotivo</option>
+              <option value="Serviços">Serviços</option>
+              <option value="Saúde">Saúde</option>
+              <option value="Educação">Educação</option>
+              <option value="Construção">Construção</option>
+              <option value="Tecnologia">Tecnologia</option>
+              <option value="Outros">Outros</option>
+            </select>
+          </div>
+        </div>
+
+        <label for="descricao">Descrição</label>
+        <textarea id="descricao" placeholder="Conte um pouco sobre o estabelecimento..."></textarea>
+
+        <div class="linha">
+          <div>
+            <label for="bairro">Bairro</label>
+            <input id="bairro" placeholder="Ex.: Centro">
+          </div>
+          <div>
+            <label for="endereco">Endereço</label>
+            <input id="endereco" placeholder="Rua, número e complemento">
+          </div>
+        </div>
+
+        <div class="linha">
+          <div>
+            <label for="telefone">Telefone</label>
+            <input id="telefone" type="tel" placeholder="(63) 99999-9999">
+          </div>
+          <div>
+            <label for="whatsapp">WhatsApp</label>
+            <input id="whatsapp" type="tel" placeholder="(63) 99999-9999">
+          </div>
+        </div>
+
+        <label for="horario">Horário de funcionamento</label>
+        <input id="horario" placeholder="Ex.: Segunda a sábado, 8h às 18h">
+
+        <label for="imagem">Foto do estabelecimento</label>
+        <input id="imagem" type="file" accept="image/jpeg,image/png,image/webp">
+        <p class="subtitulo" style="margin-top:7px">Formatos aceitos: JPG, PNG e WEBP. Envie imagens de até 5 MB.</p>
+
+        <label class="check">
+          <input id="ativo" type="checkbox" checked>
+          Publicar este estabelecimento na vitrine
+        </label>
+
+        <button id="botaoSalvar" class="botao-principal" type="submit">Salvar estabelecimento</button>
+        <button id="botaoCancelar" class="botao-secundario oculto" type="button" style="width:100%;margin-top:9px">Cancelar edição</button>
+      </form>
+
+      <div id="avisoCadastro" class="aviso"></div>
+    </div>
+
+    <div class="card">
+      <div class="topo-lista">
+        <div>
+          <h2>Estabelecimentos cadastrados</h2>
+          <p class="subtitulo">Gerencie os registros da vitrine.</p>
+        </div>
+        <button id="botaoAtualizar" class="botao-secundario">Atualizar</button>
+      </div>
+
+      <div id="listaEstabelecimentos">
+        <p class="vazio">Carregando...</p>
+      </div>
+    </div>
+
+  </section>
+</main>
+
+<script>
+const SUPABASE_URL = 'https://buzxjigzylucpkkddfaa.supabase.co';
+
+// Cole sua chave sb_publishable_ entre as aspas.
+const SUPABASE_KEY = 'sb_publishable_0yi9qA0pbTJvMMOKd5fGEg_d8R_1wOL';
+
+const supabase = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+const $ = id => document.getElementById(id);
+
+function mostrarAviso(id, mensagem, tipo) {
+  const elemento = $(id);
+  elemento.textContent = mensagem;
+  elemento.className = 'aviso ' + tipo;
+  elemento.style.display = 'block';
+}
+
+function esconderAviso(id) {
+  $(id).style.display = 'none';
+}
+
+function escapar(valor) {
+  return String(valor || '').replace(/[&<>"']/g, caractere => ({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
+  })[caractere]);
+}
+
+function mostrarLogin() {
+  $('telaLogin').classList.remove('oculto');
+  $('painel').classList.add('oculto');
+  $('botaoSair').classList.add('oculto');
+}
+
+function mostrarPainel() {
+  $('telaLogin').classList.add('oculto');
+  $('painel').classList.remove('oculto');
+  $('botaoSair').classList.remove('oculto');
+}
+
+async function verificarAdministrador() {
+  const { data: sessao } = await supabase.auth.getSession();
+
+  if (!sessao.session) {
+    mostrarLogin();
+    return false;
+  }
+
+  const { data, error } = await supabase.rpc('is_admin');
+
+  if (error || data !== true) {
+    await supabase.auth.signOut();
+    mostrarLogin();
+    mostrarAviso(
+      'avisoLogin',
+      'Esta conta não tem autorização para acessar o painel administrativo.',
+      'erro'
+    );
+    return false;
+  }
+
+  mostrarPainel();
+  await carregarEstabelecimentos();
+  return true;
+}
+
+$('formLogin').addEventListener('submit', async evento => {
+  evento.preventDefault();
+  esconderAviso('avisoLogin');
+
+  const botao = evento.submitter;
+  botao.disabled = true;
+  botao.textContent = 'Verificando...';
+
+  const { error } = await supabase.auth.signInWithPassword({
+    email: $('email').value.trim(),
+    password: $('senha').value
+  });
+
+  botao.disabled = false;
+  botao.textContent = 'Entrar no painel';
+
+  if (error) {
+    mostrarAviso(
+      'avisoLogin',
+      'Não foi possível entrar. Confira o e-mail e a senha.',
+      'erro'
+    );
+    return;
+  }
+
+  await verificarAdministrador();
+});
+
+$('botaoSair').addEventListener('click', async () => {
+  await supabase.auth.signOut();
+  mostrarLogin();
+  $('senha').value = '';
+});
+
+async function carregarEstabelecimentos() {
+  const lista = $('listaEstabelecimentos');
+  lista.innerHTML = '<p class="vazio">Carregando estabelecimentos...</p>';
+
+  const { data, error } = await supabase
+    .from('estabelecimentos')
+    .select('*')
+    .order('created_at', { ascending:false });
+
+  if (error) {
+    lista.innerHTML = '';
+    mostrarAviso(
+      'avisoCadastro',
+      'Não foi possível carregar os estabelecimentos. Verifique sua conexão.',
+      'erro'
+    );
+    return;
+  }
+
+  esconderAviso('avisoCadastro');
+
+  if (!data || data.length === 0) {
+    lista.innerHTML = '<p class="vazio">Nenhum estabelecimento cadastrado ainda.</p>';
+    return;
+  }
+
+  lista.innerHTML = data.map(item => {
+    const imagem = item.imagem_url
+      ? escapar(item.imagem_url)
+      : '';
+
+    return `
+      <article class="estabelecimento">
+        ${imagem
+          ? `<img src="${imagem}" alt="" loading="lazy">`
+          : `<div class="logo">⌕</div>`
+        }
+        <div class="estabelecimento-info">
+          <strong>${escapar(item.nome)}</strong>
+          <p>${escapar(item.categoria)} · ${escapar(item.bairro || 'Sem bairro informado')}</p>
+          <span class="status ${item.ativo ? '' : 'inativo'}">
+            ${item.ativo ? 'Publicado' : 'Desativado'}
+          </span>
+        </div>
+        <div class="acoes">
+          <button class="botao-secundario" data-editar="${item.id}">Editar</button>
+          <button class="botao-perigo" data-excluir="${item.id}">Excluir</button>
+        </div>
+      </article>
+    `;
+  }).join('');
+
+  lista.querySelectorAll('[data-editar]').forEach(botao => {
+    botao.addEventListener('click', () => {
+      const item = data.find(registro =>
+        String(registro.id) === botao.dataset.editar
+      );
+      preencherFormulario(item);
+    });
+  });
+
+  lista.querySelectorAll('[data-excluir]').forEach(botao => {
+    botao.addEventListener('click', async () => {
+      const item = data.find(registro =>
+        String(registro.id) === botao.dataset.excluir
+      );
+
+      if (!confirm('Deseja realmente excluir "' + item.nome + '"?')) return;
+
+      const { error } = await supabase
+        .from('estabelecimentos')
+        .delete()
+        .eq('id', item.id);
+
+      if (error) {
+        mostrarAviso('avisoCadastro', 'Não foi possível excluir o cadastro.', 'erro');
+        return;
+      }
+
+      mostrarAviso('avisoCadastro', 'Estabelecimento excluído.', 'sucesso');
+      await carregarEstabelecimentos();
+    });
+  });
+}
+
+function preencherFormulario(item) {
+  $('registroId').value = item.id;
+  $('nome').value = item.nome || '';
+  $('tipo').value = item.tipo || 'Empresa';
+  $('categoria').value = item.categoria || 'Outros';
+  $('descricao').value = item.descricao || '';
+  $('bairro').value = item.bairro || '';
+  $('endereco').value = item.endereco || '';
+  $('telefone').value = item.telefone || '';
+  $('whatsapp').value = item.whatsapp || '';
+  $('horario').value = item.horario_funcionamento || '';
+  $('ativo').checked = item.ativo === true;
+
+  $('tituloFormulario').textContent = 'Editar estabelecimento';
+  $('botaoSalvar').textContent = 'Salvar alterações';
+  $('botaoCancelar').classList.remove('oculto');
+
+  $('tituloFormulario').scrollIntoView({
+    behavior:'smooth',
+    block:'start'
+  });
+}
+
+function limparFormulario() {
+  $('formEstabelecimento').reset();
+  $('registroId').value = '';
+  $('ativo').checked = true;
+  $('tituloFormulario').textContent = 'Novo estabelecimento';
+  $('botaoSalvar').textContent = 'Salvar estabelecimento';
+  $('botaoCancelar').classList.add('oculto');
+  esconderAviso('avisoCadastro');
+}
+
+$('botaoCancelar').addEventListener('click', limparFormulario);
+$('botaoAtualizar').addEventListener('click', carregarEstabelecimentos);
+
+$('formEstabelecimento').addEventListener('submit', async evento => {
+  evento.preventDefault();
+  esconderAviso('avisoCadastro');
+
+  const botao = $('botaoSalvar');
+  botao.disabled = true;
+  botao.textContent = 'Salvando...';
+
+  try {
+    const id = $('registroId').value;
+    let imagemUrl = '';
+
+    const arquivo = $('imagem').files[0];
+
+    if (arquivo) {
+      if (!['image/jpeg','image/png','image/webp'].includes(arquivo.type)) {
+        throw new Error('Escolha uma imagem JPG, PNG ou WEBP.');
+      }
+
+      if (arquivo.size > 5 * 1024 * 1024) {
+        throw new Error('A imagem deve ter no máximo 5 MB.');
+      }
+
+      const extensao = arquivo.name.split('.').pop().toLowerCase();
+      const caminho = crypto.randomUUID() + '.' + extensao;
+
+      const { error: erroUpload } = await supabase.storage
+        .from('imagens-estabelecimentos')
+        .upload(caminho, arquivo, {
+          contentType:arquivo.type,
+          upsert:false
+        });
+
+      if (erroUpload) {
+        throw new Error('Não foi possível enviar a foto. Verifique as permissões do armazenamento.');
+      }
+
+      const { data: imagemPublica } = supabase.storage
+        .from('imagens-estabelecimentos')
+        .getPublicUrl(caminho);
+
+      imagemUrl = imagemPublica.publicUrl;
+    }
+
+    const registro = {
+      nome:$('nome').value.trim(),
+      tipo:$('tipo').value,
+      categoria:$('categoria').value,
+      descricao:$('descricao').value.trim(),
+      bairro:$('bairro').value.trim(),
+      endereco:$('endereco').value.trim(),
+      telefone:$('telefone').value.trim(),
+      whatsapp:$('whatsapp').value.trim(),
+      horario_funcionamento:$('horario').value.trim(),
+      ativo:$('ativo').checked
+    };
+
+    if (imagemUrl) {
+      registro.imagem_url = imagemUrl;
+    }
+
+    let resultado;
+
+    if (id) {
+      resultado = await supabase
+        .from('estabelecimentos')
+        .update(registro)
+        .eq('id', id);
+    } else {
+      resultado = await supabase
+        .from('estabelecimentos')
+        .insert(registro);
+    }
+
+    if (resultado.error) {
+      throw new Error('Não foi possível salvar o estabelecimento. Confira os campos e as permissões.');
+    }
+
+    limparFormulario();
+    mostrarAviso(
+      'avisoCadastro',
+      'Estabelecimento salvo com sucesso!',
+      'sucesso'
+    );
+
+    await carregarEstabelecimentos();
+
+  } catch (erro) {
+    mostrarAviso(
+      'avisoCadastro',
+      erro.message || 'Ocorreu um erro ao salvar.',
+      'erro'
+    );
+  } finally {
+    botao.disabled = false;
+    botao.textContent = $('registroId').value
+      ? 'Salvar alterações'
+      : 'Salvar estabelecimento';
+  }
+});
+
+verificarAdministrador();
+</script>
+
+</body>
+</html>
