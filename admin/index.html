@@ -147,6 +147,15 @@ small{color:var(--cinza)}
         <label for="horario">Horário de funcionamento</label>
         <input id="horario" placeholder="Ex.: Segunda a sábado, das 8h às 18h">
 
+        <label for="whatsapp">WhatsApp</label>
+        <input id="whatsapp" type="tel" placeholder="(63) 99999-9999">
+        
+        <label for="instagram">Instagram</label>
+        <input id="instagram" type="url" placeholder="https://www.instagram.com/nomedonegocio">
+
+       
+
+
         <label for="imagem">Foto do estabelecimento</label>
         <input id="imagem" type="file" accept="image/jpeg,image/png,image/webp">
         <small>Formatos JPG, PNG ou WebP. Prefira imagens de até 5 MB.</small>
@@ -315,6 +324,7 @@ function editBusiness(item) {
   $("endereco").value = item.endereco || "";
   $("telefone").value = item.telefone || "";
   $("whatsapp").value = item.whatsapp || "";
+  $("instagram").value = item.instagram_url || "";
   $("horario").value = item.horario_funcionamento || "";
   $("imagemUrl").value = item.imagem_url || "";
   $("ativo").checked = item.ativo === true;
@@ -381,6 +391,7 @@ $("businessForm").addEventListener("submit", async event => {
       telefone:$("telefone").value.trim(),
       whatsapp:$("whatsapp").value.trim(),
       horario_funcionamento:$("horario").value.trim(),
+      instagram_url:$("instagram").value.trim(),
       imagem_url:imageUrl,
       ativo:$("ativo").checked
     };
