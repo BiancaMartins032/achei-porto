@@ -720,13 +720,160 @@ footer {
   </div>
 </nav>
 
+
 <script>
+const SUPABASE_URL = 'https://buzxjigzylucpkkddfaa.supabase.co';
+
+// Cole sua chave sb_publishable_ entre as aspas abaixo.
+const SUPABASE_KEY = 'sb_publishable_0yi9qA0pbTJvMMOKd5fGEg_d8R_1wOL';
+
 let categoriaAtual = 'Todas';
+
+function escapar(valor) {
+  return String(valor || '').replace(/[&<>"']/g, caractere => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  })[caractere]);
+}
+
+function linkImagem(url) {
+  try {
+    const imagem = new URL(url);
+    return ['https:', 'http:'].includes(imagem.protocol)
+      ? imagem.href
+      : '';
+  } catch {
+    return '';
+  }
+}
+
+function linkWhatsApp(numero) {
+  let digitos = String(numero || '').replace(/\D/g, '');
+
+  if (!digitos) return '';
+
+  if (!digitos.startsWith('55')) {
+    digitos = '55' + digitos;
+  }
+
+  return 'https://wa.me/' + digitos;
+}
+
+async function carregarEstabelecimentos() {
+  const feed = document.getElementById('feed');
+  const mensagem = document.getElementById('semResultados');
+
+  feed.innerHTML = '<p style="padding:20px;text-align:center">Carregando estabelecimentos...</p>';
+
+  try {
+    const resposta = await fetch(
+      SUPABASE_URL +
+      '/rest/v1/estabelecimentos?select=*&ativo=eq.true&order=created_at.desc',
+      {
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: 'Bearer ' + SUPABASE_KEY
+        }
+      }
+    );
+
+    if (!resposta.ok) {
+      throw new Error('Não foi possível consultar o banco.');
+    }
+
+    const estabelecimentos = await resposta.json();
+
+    feed.innerHTML = '';
+
+    const bairros = [...new Set(
+      estabelecimentos
+        .map(item => item.bairro)
+        .filter(Boolean)
+    )].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+
+    const seletorBairro = document.getElementById('bairro');
+    seletorBairro.innerHTML =
+      '<option value="">Todos os bairros</option>';
+
+    bairros.forEach(bairro => {
+      const opcao = document.createElement('option');
+      opcao.value = bairro;
+      opcao.textContent = bairro;
+      seletorBairro.appendChild(opcao);
+    });
+
+    estabelecimentos.forEach(item => {
+      const nome = escapar(item.nome);
+      const categoria = escapar(item.categoria);
+      const bairro = escapar(item.bairro);
+      const descricao = escapar(item.descricao);
+      const endereco = escapar(item.endereco);
+      const horario = escapar(item.horario_funcionamento);
+      const tipo = escapar(item.tipo);
+      const imagem = linkImagem(item.imagem_url);
+      const whatsapp = linkWhatsApp(item.whatsapp || item.telefone);
+      const inicial = escapar((item.nome || '?').charAt(0).toUpperCase());
+
+      const cartao = document.createElement('article');
+      cartao.className = 'publicacao';
+      cartao.dataset.categoria = item.categoria || '';
+      cartao.dataset.bairro = item.bairro || '';
+      cartao.dataset.texto = [
+        item.nome, item.tipo, item.categoria, item.descricao,
+        item.bairro, item.endereco, item.horario_funcionamento
+      ].join(' ');
+
+      cartao.innerHTML = `
+        <div class="empresa">
+          <div class="avatar">${inicial}</div>
+          <div class="empresa-info">
+            <strong>${nome}</strong>
+            <p>${bairro || 'Porto Nacional'} · ${categoria}</p>
+          </div>
+        </div>
+
+        ${imagem
+          ? `<img class="foto" src="${escapar(imagem)}" alt="${nome}" loading="lazy">`
+          : `<div style="height:100px;background:#E9EDF8;display:grid;place-items:center;color:#4059B8;font-size:13px">Imagem não cadastrada</div>`
+        }
+
+        <div class="conteudo">
+          <h4>${nome}</h4>
+          <p>${descricao || 'Conheça este estabelecimento em Porto Nacional.'}</p>
+          ${endereco ? `<p style="margin-top:7px">Endereço: ${endereco}</p>` : ''}
+          ${horario ? `<p style="margin-top:5px">Horário: ${horario}</p>` : ''}
+          <div class="acoes">
+            <span class="tag">${categoria || tipo || 'Estabelecimento'}</span>
+            ${whatsapp
+              ? `<a class="whatsapp" href="${whatsapp}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">WhatsApp ↗</a>`
+              : ''
+            }
+          </div>
+        </div>
+      `;
+
+      feed.appendChild(cartao);
+    });
+
+    filtrar();
+
+  } catch (erro) {
+    console.error(erro);
+    feed.innerHTML = '';
+    mensagem.textContent =
+      'Não foi possível carregar os estabelecimentos. Verifique a conexão e as configurações do Supabase.';
+    mensagem.style.display = 'block';
+  }
+}
 
 function filtrar() {
   const termo = document.getElementById('pesquisa')
     .value.toLowerCase().trim();
 
+  const bairroSelecionado = document.getElementById('bairro').value;
   const publicacoes = document.querySelectorAll('.publicacao');
   let encontrados = 0;
 
@@ -739,16 +886,27 @@ function filtrar() {
     const correspondeCategoria =
       categoriaAtual === 'Todas' ||
       item.dataset.categoria === categoriaAtual;
+    const correspondeBairro =
+      !bairroSelecionado ||
+      item.dataset.bairro === bairroSelecionado;
 
-    const mostrar = correspondeTexto && correspondeCategoria;
+    const mostrar =
+      correspondeTexto && correspondeCategoria && correspondeBairro;
 
     item.style.display = mostrar ? 'block' : 'none';
 
     if (mostrar) encontrados++;
   });
 
-  document.getElementById('semResultados').style.display =
-    encontrados === 0 ? 'block' : 'none';
+  const mensagem = document.getElementById('semResultados');
+
+  if (encontrados === 0) {
+    mensagem.textContent =
+      'Nenhum estabelecimento encontrado. Tente outra pesquisa.';
+    mensagem.style.display = 'block';
+  } else {
+    mensagem.style.display = 'none';
+  }
 }
 
 function categoria(nome, botao) {
@@ -764,22 +922,20 @@ function categoria(nome, botao) {
 
 function irPesquisa() {
   document.getElementById('pesquisa').focus();
-  window.scrollTo({top: 0, behavior: 'smooth'});
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function inicio() {
   document.getElementById('pesquisa').value = '';
+  document.getElementById('bairro').value = '';
   categoriaAtual = 'Todas';
 
   document.querySelectorAll('.categoria').forEach(item => {
-    item.classList.toggle(
-      'ativa',
-      item.textContent === 'Todas'
-    );
+    item.classList.toggle('ativa', item.textContent === 'Todas');
   });
 
   filtrar();
-  window.scrollTo({top: 0, behavior: 'smooth'});
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function irEmpresas() {
@@ -793,9 +949,9 @@ function sobre() {
   alert('Achei Porto: uma vitrine independente para descobrir empresas, produtos e serviços de Porto Nacional - TO.');
 }
 
-function contato() {
-  alert('Esta é uma publicação demonstrativa. O contato pelo WhatsApp será ativado quando cadastrarmos os dados reais da empresa.');
-}
+document.getElementById('bairro').addEventListener('change', filtrar);
+
+carregarEstabelecimentos();
 </script>
 
 </body>
