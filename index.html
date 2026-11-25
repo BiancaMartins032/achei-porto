@@ -363,6 +363,18 @@ main {
   font-weight: bold;
   cursor: pointer;
 }
+  
+.instagram {
+  background: #4059B8;
+  color: white;
+  border: none;
+  border-radius: 9px;
+  padding: 10px 13px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
 
 .sem-resultados {
   background: white;
@@ -815,16 +827,20 @@ async function carregarEstabelecimentos() {
       const tipo = escapar(item.tipo);
       const imagem = linkImagem(item.imagem_url);
       const whatsapp = linkWhatsApp(item.whatsapp || item.telefone);
-      const inicial = escapar((item.nome || '?').charAt(0).toUpperCase());
+      const instagram = item.instagram_url && /^https?:\/\//i.test(item.instagram_url)
+  ? escapar(item.instagram_url)
+  : '';
+const inicial = escapar((item.nome || '?').charAt(0).toUpperCase());
 
       const cartao = document.createElement('article');
       cartao.className = 'publicacao';
       cartao.dataset.categoria = item.categoria || '';
       cartao.dataset.bairro = item.bairro || '';
       cartao.dataset.texto = [
-        item.nome, item.tipo, item.categoria, item.descricao,
-        item.bairro, item.endereco, item.horario_funcionamento
-      ].join(' ');
+  item.nome, item.tipo, item.categoria, item.descricao,
+  item.bairro, item.endereco, item.horario_funcionamento,
+  item.whatsapp, item.telefone, item.instagram_url
+].join(' ');
 
       cartao.innerHTML = `
         <div class="empresa">
@@ -845,13 +861,19 @@ async function carregarEstabelecimentos() {
           <p>${descricao || 'Conheça este estabelecimento em Porto Nacional.'}</p>
           ${endereco ? `<p style="margin-top:7px">Endereço: ${endereco}</p>` : ''}
           ${horario ? `<p style="margin-top:5px">Horário: ${horario}</p>` : ''}
-          <div class="acoes">
-            <span class="tag">${categoria || tipo || 'Estabelecimento'}</span>
-            ${whatsapp
-              ? `<a class="whatsapp" href="${whatsapp}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">WhatsApp ↗</a>`
-              : ''
-            }
-          </div>
+          
+<div class="acoes">
+  <span class="tag">${categoria || tipo || 'Estabelecimento'}</span>
+  ${whatsapp
+    ? `<a class="whatsapp" href="${whatsapp}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">WhatsApp ↗</a>`
+    : ''
+  }
+  ${instagram
+    ? `<a class="instagram" href="${instagram}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Instagram ↗</a>`
+    : ''
+  }
+</div>
+
         </div>
       `;
 
